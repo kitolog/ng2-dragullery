@@ -37,6 +37,16 @@ export class AppModule { }
 
 Once your library is imported, you can use its components, directives and pipes in your Angular application:
 
+```typescript
+this.imagesList = [
+      {
+        Url: 'url-to-image',
+        Description: 'Description',
+        Position: 1
+      }
+    ]
+```
+
 ```xml
 <!-- You can now use your library component in app.component.html -->
 <h1>
