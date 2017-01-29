@@ -1,5 +1,5 @@
 {
-  "name": "angular2-dragullery",
+  "name": "ng2-dragullery",
   "version": "0.1.0",
   "scripts": {
     "lint": "tslint src/**/*.ts",

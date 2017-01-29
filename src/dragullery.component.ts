@@ -2,49 +2,47 @@ import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'dragullery',
-  // styleUrls: ['./dragullery.component.css'],
-  // templateUrl: './dragullery.component.html',
-  styles: [`
+  styles: [
+    `.gu-mirror {
+        position: fixed !important;
+        margin: 0 !important;
+        z-index: 9999 !important;
+        opacity: 0.8;
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+        filter: alpha(opacity=80);
+      }
+      .gu-hide {
+        display: none !important;
+      }
+      .gu-unselectable {
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+        user-select: none !important;
+      }
+      .gu-transit {
+        opacity: 0.2;
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+        filter: alpha(opacity=20);
+      }
       .dragullery{
         width: 100%;
       }
-    /*.dragullery .item {*/
-      /*width: 200px;*/
-      /*height: 100px;*/
-      /*!*width: 100%;*!*/
-      /*!*height: 100%;*!*/
-      /*display: inline-block;*/
-      /*background-repeat: no-repeat;*/
-      /*background-size: contain;*/
-    /*}*/
-     
-     .dragullery .item {
+      .dragullery-item {
          display: inline-block;
-    }
-    
-    .dragullery .item .image {
-      max-height: 100px;
-      float:left;
-    }
+      }
+      .dragullery-item .image {
+        max-height: 100px;
+        float:left;
+      }
   `],
   template: `
-      <!--<md-grid-list class="dragullery" cols="4" rowHeight="100px">-->
-      <div class="dragullery"  [dragula]='"bag-one"'>
-      <div class="item"
+      <div class="dragullery" [dragula]='"bag-one"'>
+        <div class="dragullery-item"
           *ngFor="let image of imagesList">
-        <!--<md-grid-tile-->
-            <!--[dragula]='"bag-one"'-->
-            <!--*ngFor="let image of imagesList">-->
-          <!--<span-->
-            <!--class="item"-->
-            <!--title="{{image.Description}}"-->
-            <!--[style.background-image]="'url('+image.Url+')'"-->
-          <!--&gt;</span>-->
-          <img src="{{image.Url}}" class="image"/>
-        <!--</md-grid-tile>-->
+          <img src="{{image.Url}}" class="image" title="{{image.Description}}" alt="{{image.Description}}"/>
         </div>
-        </div>
-      <!--</md-grid-list>-->
+      </div>
 `
 })
 export class DragulleryComponent {
