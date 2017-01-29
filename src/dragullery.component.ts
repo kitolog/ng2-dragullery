@@ -1,4 +1,5 @@
 import {Component, Input} from '@angular/core';
+import {DragulaService} from 'ng2-dragula';
 
 @Component({
   selector: 'dragullery',
@@ -48,14 +49,45 @@ import {Component, Input} from '@angular/core';
 export class DragulleryComponent {
 
   @Input() imagesList: any[];
+  @Input() devMode: boolean = false;
+
   protected previousList: any[];
   protected sortedList: any[] = [];
+  public direction: string = 'vertical';
 
-  constructor() {
+  constructor(private dragulaService: DragulaService) {
   }
 
   ngOnInit() {
+    this.dragulaService.setOptions("bag-one", {direction: 'horizontal'});
+    if (this.devMode) {
+      console.log('DragulaService', this.dragulaService);
+      this.dragulaService.drag.subscribe((value: any) => {
+        this.onDrag(value.slice(1));
+      });
+
+      this.dragulaService.over.subscribe((value: any) => {
+        this.onOver(value.slice(1));
+      });
+      this.dragulaService.out.subscribe((value: any) => {
+        this.onOut(value.slice(1));
+      });
+    }
+
     this.orderImages();
+  }
+
+
+  onDrag(e: any) {
+    console.log('Dragullery drag', e);
+  }
+
+  onOver(e: any) {
+    console.log('Dragullery over', e);
+  }
+
+  onOut(e: any) {
+    console.log('Dragullery out', e);
   }
 
   ngDoCheck() {
@@ -65,7 +97,7 @@ export class DragulleryComponent {
   orderImages(): void {
     this.previousList = this.imagesList;
     if (this.imagesList && (this.imagesList.length > 0)) {
-      this.sortedList = this.imagesList.sort((item1:any, item2:any) => {
+      this.sortedList = this.imagesList.sort((item1: any, item2: any) => {
         if (item1 && item1.hasOwnProperty('Position') && item2 && item2.hasOwnProperty('Position')) {
           if (item1.Position > item2.Position) {
             return 1;
