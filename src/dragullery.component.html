@@ -1,0 +1,11 @@
+<md-grid-list class="dragullery" cols="4" rowHeight="100px" [dragula]='"bag-one"' [dragulaModel]='imagesList'>
+  <md-grid-tile
+    *ngFor="let image of imagesList">
+          <span
+            class="item"
+            title="{{image.Description}}"
+            [style.background-image]="image.Url"
+            [style.resize-mode]="'contain'"
+          ></span>
+  </md-grid-tile>
+</md-grid-list>
