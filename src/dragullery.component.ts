@@ -39,7 +39,7 @@ import {Component, Input} from '@angular/core';
   template: `
       <div class="dragullery" [dragula]='"bag-one"'>
         <div class="dragullery-item"
-          *ngFor="let image of imagesList">
+          *ngFor="let image of sortedList">
           <img src="{{image.Url}}" class="image" title="{{image.Description}}" alt="{{image.Description}}"/>
         </div>
       </div>
@@ -48,8 +48,34 @@ import {Component, Input} from '@angular/core';
 export class DragulleryComponent {
 
   @Input() imagesList: any[];
+  protected previousList: any[];
+  protected sortedList: any[] = [];
 
   constructor() {
   }
 
+  ngOnInit() {
+    this.orderImages();
+  }
+
+  ngDoCheck() {
+    this.orderImages();
+  }
+
+  orderImages(): void {
+    this.previousList = this.imagesList;
+    if (this.imagesList && (this.imagesList.length > 0)) {
+      this.sortedList = this.imagesList.sort((item1:any, item2:any) => {
+        if (item1 && item1.hasOwnProperty('Position') && item2 && item2.hasOwnProperty('Position')) {
+          if (item1.Position > item2.Position) {
+            return 1;
+          } else if (item1.Position < item2.Position) {
+            return -1;
+          }
+        }
+
+        return 0;
+      });
+    }
+  }
 }
