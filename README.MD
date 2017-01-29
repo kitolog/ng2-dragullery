@@ -5,15 +5,7 @@
 To install this library, run:
 
 ```bash
-$ npm install angular2-dragullery --save
-```
-
-## Consuming your library
-
-Once you have published your library to npm, you can import your library in any Angular application by running:
-
-```bash
-$ npm install angular2-dragullery
+$ npm install https://github.com/kitolog/ng2-dragullery.git --save
 ```
 
 and then from your Angular `AppModule`:
@@ -25,7 +17,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 
 // Import your library
-import { SampleModule } from 'angular2-dragullery';
+import { DragulleryModule } from 'ng2-dragullery';
 
 @NgModule({
   declarations: [
@@ -35,7 +27,7 @@ import { SampleModule } from 'angular2-dragullery';
     BrowserModule,
 
     // Specify your library as an import
-    LibraryModule
+    DragulleryModule
   ],
   providers: [],
   bootstrap: [AppComponent]
@@ -50,7 +42,7 @@ Once your library is imported, you can use its components, directives and pipes 
 <h1>
   {{title}}
 </h1>
-<sampleComponent></sampleComponent>
+<dragullery [imagesList]="imagesList"></dragullery>
 ```
 
 ## Development
