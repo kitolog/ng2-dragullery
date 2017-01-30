@@ -4,7 +4,8 @@ import {DragulaService} from 'ng2-dragula';
 @Component({
   selector: 'dragullery',
   styles: [
-    `.gu-mirror {
+    `
+    .gu-mirror {
         position: fixed !important;
         margin: 0 !important;
         z-index: 9999 !important;
@@ -36,6 +37,36 @@ import {DragulaService} from 'ng2-dragula';
         max-height: 100px;
         float:left;
       }
+      
+      .button{
+        display: none;
+      }
+      
+      @media (max-width: 768px) {
+        .dragullery-item .image {
+          max-height: inherit!important;
+          width: 100%;
+        }
+        
+        .dragullery-item {
+          position: relative;
+        }
+          
+        .button{
+          display: inline-block;
+          position: absolute;
+          right: 10px;
+          
+        }
+        
+        .button.up{
+          top: 10px;
+        }
+        
+        .button.down{
+          bottom: 10px;
+        }
+      }
   `],
   template: `
       <div class="dragullery" [dragula]='"bag-one"' [ngStyle]="galleryStyle">
@@ -48,9 +79,14 @@ import {DragulaService} from 'ng2-dragula';
            class="image"
            title="{{image.Description}}" 
            alt="{{image.Description}}"/>
+           <button (click)="moveUp(image.Uid)" class="button up" md-mini-fab><md-icon>keyboard_arrow_up</md-icon></button>
+           <button (click)="moveDown(image.Uid)" class="button down" md-mini-fab><md-icon>keyboard_arrow_down</md-icon></button>
         </div>
       </div>
-`
+`,
+  host: {
+    '(window:resize)': 'onWindowResize($event)'
+  }
 })
 export class DragulleryComponent {
 
@@ -63,34 +99,42 @@ export class DragulleryComponent {
   protected sortedList: any[] = [];
   protected sortedMap: any = {};
   protected direction: string = 'vertical';
+  protected innerWidth: any;
 
   constructor(private dragulaService: DragulaService) {
-
+    this.innerWidth = (window.screen.width);
   }
 
   ngOnInit() {
-    this.dragulaService.setOptions("bag-one", {direction: 'horizontal'});
-
-    this.dragulaService.drop.subscribe((items: any[]) => {
-      let newHTMLItems = items[2].children;
-      this.recalculatePosition(newHTMLItems);
-    });
-
-    if (this.devMode) {
-      console.log('DragulaService', this.dragulaService);
-      this.dragulaService.drag.subscribe((value: any) => {
-        this.onDrag(value.slice(1));
+    if (this.innerWidth > 768) {
+      this.dragulaService.setOptions("bag-one", {direction: 'horizontal'});
+      this.dragulaService.drop.subscribe((items: any[]) => {
+        let newHTMLItems = items[2].children;
+        this.recalculatePosition(newHTMLItems);
       });
 
-      this.dragulaService.over.subscribe((value: any) => {
-        this.onOver(value.slice(1));
-      });
-      this.dragulaService.out.subscribe((value: any) => {
-        this.onOut(value.slice(1));
-      });
+      if (this.devMode) {
+        console.log('DragulaService', this.dragulaService);
+        this.dragulaService.drag.subscribe((value: any) => {
+          this.onDrag(value.slice(1));
+        });
+
+        this.dragulaService.over.subscribe((value: any) => {
+          this.onOver(value.slice(1));
+        });
+        this.dragulaService.out.subscribe((value: any) => {
+          this.onOut(value.slice(1));
+        });
+      }
     }
-
+    /**
+     * @TODO: destroy dragulaService
+     */
     this.orderImages();
+  }
+
+  onWindowResize(event: any) {
+    this.innerWidth = event.target.innerWidth;
   }
 
 
@@ -115,10 +159,30 @@ export class DragulleryComponent {
       let item: any = this.findByUid(htmlItems[i].children[0].getAttribute('uid'));
       if (this.devMode) {
         console.log('UID', htmlItems[i].children[0].getAttribute('uid'));
-        console.log('item', item);
+        console.log('Item', item);
       }
       if (item) {
         item.Position = i + 1;
+      }
+    }
+  }
+
+  moveUp(uid: string): void {
+    if (this.sortedMap.hasOwnProperty(uid) && (this.sortedMap[uid] !== null) && (typeof this.sortedList[this.sortedMap[uid]] !== 'undefined') && this.sortedList[this.sortedMap[uid]]) {
+      if ((this.sortedMap[uid] - 1 > -1) && this.sortedList[this.sortedMap[uid] - 1]) {
+        let previous = this.sortedList[this.sortedMap[uid] - 1].Position;
+        this.sortedList[this.sortedMap[uid] - 1].Position = this.sortedList[this.sortedMap[uid]].Position;
+        this.sortedList[this.sortedMap[uid]].Position = previous;
+      }
+    }
+  }
+
+  moveDown(uid: string): void {
+    if (this.sortedMap.hasOwnProperty(uid) && (this.sortedMap[uid] !== null) && (typeof this.sortedList[this.sortedMap[uid]] !== 'undefined') && this.sortedList[this.sortedMap[uid]]) {
+      if ((this.sortedMap[uid] + 1 < this.sortedList.length - 1) && this.sortedList[this.sortedMap[uid] + 1]) {
+        let previous = this.sortedList[this.sortedMap[uid] + 1].Position;
+        this.sortedList[this.sortedMap[uid] + 1].Position = this.sortedList[this.sortedMap[uid]].Position;
+        this.sortedList[this.sortedMap[uid]].Position = previous;
       }
     }
   }

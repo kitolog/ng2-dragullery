@@ -54,6 +54,17 @@ OR
 <dragullery [imagesList]="imagesList" [imageStyle]="{'max-height':'50px'}"></dragullery>
 ```
 
+### Angular material styles
+ - Add Angular Material icons font link to index.html
+```xml
+<!-- Add Angular Material icons font -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+```
+ - Import Angular Material styles in your styles.scss
+```scss
+@import '~@angular/material/core/theming/prebuilt/deeppurple-amber.css';
+```
+
 ## API
  - ```[imagesList]``` an array of Image models (Url,Description,Position)
  - ```[imageStyle]``` styles for image

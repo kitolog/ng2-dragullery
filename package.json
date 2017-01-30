@@ -1,6 +1,6 @@
 {
   "name": "ng2-dragullery",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "scripts": {
     "lint": "tslint src/**/*.ts",
     "test": "tsc && karma start",
