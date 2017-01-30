@@ -72,15 +72,15 @@ import {DragulaService} from 'ng2-dragula';
       <div class="dragullery" [dragula]='"bag-one"' [ngStyle]="galleryStyle">
         <div class="dragullery-item"
          [ngStyle]="wrapperStyle"
-          *ngFor="let image of sortedList">
+          *ngFor="let image of sortedList; let isFirst = first; let isLast = last; ">
           <img src="{{image.Url}}"
           [ngStyle]="imageStyle"
            [attr.uid]="image.Uid"
            class="image"
            title="{{image.Description}}" 
            alt="{{image.Description}}"/>
-           <button (click)="moveUp(image.Uid)" class="button up" md-mini-fab><md-icon>keyboard_arrow_up</md-icon></button>
-           <button (click)="moveDown(image.Uid)" class="button down" md-mini-fab><md-icon>keyboard_arrow_down</md-icon></button>
+           <button *ngIf="!isFirst" (click)="moveUp(image.Uid)" class="button up" md-mini-fab><md-icon>keyboard_arrow_up</md-icon></button>
+           <button *ngIf="!isLast" (click)="moveDown(image.Uid)" class="button down" md-mini-fab><md-icon>keyboard_arrow_down</md-icon></button>
         </div>
       </div>
 `,
@@ -136,7 +136,6 @@ export class DragulleryComponent {
   onWindowResize(event: any) {
     this.innerWidth = event.target.innerWidth;
   }
-
 
   onDrag(e: any) {
     console.log('Dragullery drag', e);
