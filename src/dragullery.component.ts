@@ -38,10 +38,12 @@ import {DragulaService} from 'ng2-dragula';
       }
   `],
   template: `
-      <div class="dragullery" [dragula]='"bag-one"'>
+      <div class="dragullery" [dragula]='"bag-one"' [ngStyle]="galleryStyle">
         <div class="dragullery-item"
+         [ngStyle]="wrapperStyle"
           *ngFor="let image of sortedList">
           <img src="{{image.Url}}"
+          [ngStyle]="imageStyle"
            [attr.uid]="image.Uid"
            class="image"
            title="{{image.Description}}" 
@@ -54,12 +56,16 @@ export class DragulleryComponent {
 
   @Input() imagesList: any[];
   @Input() devMode: boolean = false;
+  @Input() galleryStyle: any = null;
+  @Input() wrapperStyle: any = null;
+  @Input() imageStyle: any = null;
 
   protected sortedList: any[] = [];
   protected sortedMap: any = {};
-  public direction: string = 'vertical';
+  protected direction: string = 'vertical';
 
   constructor(private dragulaService: DragulaService) {
+
   }
 
   ngOnInit() {
@@ -117,7 +123,7 @@ export class DragulleryComponent {
     }
   }
 
-  private findByUid(uid: string): any {
+  findByUid(uid: string): any {
     let result: any = null;
     if (this.sortedMap.hasOwnProperty(uid) && (this.sortedMap[uid] !== null) && (typeof this.sortedList[this.sortedMap[uid]] !== 'undefined') && this.sortedList[this.sortedMap[uid]]) {
       result = this.sortedList[this.sortedMap[uid]];

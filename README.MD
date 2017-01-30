@@ -49,12 +49,16 @@ this.imagesList = [
 
 ```xml
 <!-- You can now use your library component in app.component.html -->
-<h1>
-  {{title}}
-</h1>
 <dragullery [imagesList]="imagesList"></dragullery>
+OR
+<dragullery [imagesList]="imagesList" [imageStyle]="{'max-height':'50px'}"></dragullery>
 ```
 
+## API
+ - ```[imagesList]``` an array of Image models (Url,Description,Position)
+ - ```[imageStyle]``` styles for image
+ - ```[wrapperStyle]``` styles for image wrapper
+ - ```[galleryStyle]``` styles for gallery container
 ## Development
 
 To generate all `*.js`, `*.js.map` and `*.d.ts` files:
