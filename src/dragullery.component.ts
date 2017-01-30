@@ -41,7 +41,11 @@ import {DragulaService} from 'ng2-dragula';
       <div class="dragullery" [dragula]='"bag-one"'>
         <div class="dragullery-item"
           *ngFor="let image of sortedList">
-          <img src="{{image.Url}}" class="image" title="{{image.Description}}" alt="{{image.Description}}"/>
+          <img src="{{image.Url}}"
+           [attr.uid]="image.Uid"
+           class="image"
+           title="{{image.Description}}" 
+           alt="{{image.Description}}"/>
         </div>
       </div>
 `
@@ -51,8 +55,8 @@ export class DragulleryComponent {
   @Input() imagesList: any[];
   @Input() devMode: boolean = false;
 
-  protected previousList: any[];
   protected sortedList: any[] = [];
+  protected sortedMap: any = {};
   public direction: string = 'vertical';
 
   constructor(private dragulaService: DragulaService) {
@@ -60,6 +64,12 @@ export class DragulleryComponent {
 
   ngOnInit() {
     this.dragulaService.setOptions("bag-one", {direction: 'horizontal'});
+
+    this.dragulaService.drop.subscribe((items: any[]) => {
+      let newHTMLItems = items[2].children;
+      this.recalculatePosition(newHTMLItems);
+    });
+
     if (this.devMode) {
       console.log('DragulaService', this.dragulaService);
       this.dragulaService.drag.subscribe((value: any) => {
@@ -94,20 +104,63 @@ export class DragulleryComponent {
     this.orderImages();
   }
 
+  recalculatePosition(htmlItems: any[]) {
+    for (let i = 0; i < htmlItems.length; i++) {
+      let item: any = this.findByUid(htmlItems[i].children[0].getAttribute('uid'));
+      if (this.devMode) {
+        console.log('UID', htmlItems[i].children[0].getAttribute('uid'));
+        console.log('item', item);
+      }
+      if (item) {
+        item.Position = i + 1;
+      }
+    }
+  }
+
+  private findByUid(uid: string): any {
+    let result: any = null;
+    if (this.sortedMap.hasOwnProperty(uid) && (this.sortedMap[uid] !== null) && (typeof this.sortedList[this.sortedMap[uid]] !== 'undefined') && this.sortedList[this.sortedMap[uid]]) {
+      result = this.sortedList[this.sortedMap[uid]];
+    }
+
+    return result;
+  }
+
+  generateUid(): string {
+    function s4() {
+      return Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1);
+    }
+
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+      s4() + '-' + s4() + s4() + s4();
+  }
+
   orderImages(): void {
-    this.previousList = this.imagesList;
     if (this.imagesList && (this.imagesList.length > 0)) {
-      this.sortedList = this.imagesList.sort((item1: any, item2: any) => {
-        if (item1 && item1.hasOwnProperty('Position') && item2 && item2.hasOwnProperty('Position')) {
-          if (item1.Position > item2.Position) {
-            return 1;
-          } else if (item1.Position < item2.Position) {
-            return -1;
+      let resultList: any[] = [],
+        sortedList = this.imagesList.sort((item1: any, item2: any) => {
+          if (item1 && item1.hasOwnProperty('Position') && item2 && item2.hasOwnProperty('Position')) {
+            if (item1.Position > item2.Position) {
+              return 1;
+            } else if (item1.Position < item2.Position) {
+              return -1;
+            }
           }
+
+          return 0;
+        });
+
+      sortedList.map(item => {
+        if (!item.hasOwnProperty('Uid') || !item.Uid) {
+          item.Uid = this.generateUid();
         }
 
-        return 0;
+        this.sortedMap[item.Uid] = resultList.push(item) - 1;
       });
+
+      this.sortedList = resultList;
     }
   }
 }
