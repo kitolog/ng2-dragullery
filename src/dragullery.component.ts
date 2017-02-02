@@ -32,6 +32,7 @@ import {DragulaService} from 'ng2-dragula';
       }
       .dragullery-item {
          display: inline-block;
+         vertical-align:top
       }
       .dragullery-item .image {
         max-height: 100px;
@@ -50,6 +51,7 @@ import {DragulaService} from 'ng2-dragula';
         
         .dragullery-item {
           position: relative;
+          min-width: 100%;
         }
           
         .button{
