@@ -133,6 +133,10 @@ export class DragulleryComponent {
     this.orderImages();
   }
 
+  ngOnDestroy() {
+    this.dragulaService.destroy("bag-one");
+  }
+
   onWindowResize(event: any) {
     this.innerWidth = event.target.innerWidth;
   }
